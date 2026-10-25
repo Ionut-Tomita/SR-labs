@@ -1,0 +1,19 @@
+{
+  "device_context": {
+    "browser": "Chrome 141.0.0",
+    "device_type": "Desktop",
+    "os": "Linux ",
+    "raw_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+  },
+  "network": {
+    "ip_address": "127.0.0.1"
+  },
+  "run_info": {
+    "timestamp": 1791442689,
+    "verification_hash": "3281d7b16e96"
+  },
+  "student": "Tomita Ionut",
+  "user_preferences_implicit": {
+    "preferred_language": "ro"
+  }
+}
