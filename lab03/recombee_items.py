@@ -1,17 +1,21 @@
+import os
+
 import pandas as pd
-from recombee_api_client.api_client import RecombeeClient
+from dotenv import load_dotenv
+from recombee_api_client.api_client import RecombeeClient, Region
 from recombee_api_client.api_requests import SetItemValues, Batch
 from recombee_api_client.exceptions import APIException
 
-# TODO 1: Configurare credentiale Recombee (la fel ca la Lab 02)
-DB_NAME = 'numele_bazei_tale_de_date'
-PRIVATE_TOKEN = 'tokenul_tau_privat'
-REGION = 'eu-west'
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lab02', '.env'))
+DB_NAME = os.getenv('DB_NAME')
+PRIVATE_TOKEN = os.getenv('PRIVATE_TOKEN')
+REGION_STR = os.getenv('REGION', 'eu-west')
+REGION = Region[REGION_STR.upper().replace('-', '_')]
 
 client = RecombeeClient(DB_NAME, PRIVATE_TOKEN, region=REGION)
 
 # TODO 2: Incarcarea aceluiasi dataset folosit la Lab 02
-PATH_DATASET = 'dataset_ales.csv'
+PATH_DATASET = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'lab02', 'books.csv')
 
 def send_items():
     """Functie care citeste dataset-ul si trimite item-urile in Recombee"""
@@ -22,14 +26,18 @@ def send_items():
     
     for index, row in df.iterrows():
         # TODO 3: Extrageti ID-ul unic al produsului din coloana corespunzatoare din CSV
-        item_id = str(row['nume_coloana_id'])
-        
+        item_id = str(row['isbn13'])
+
         # TODO 4: Mapati proprietatile definite anterior cu valorile din randul curent
-        # Exemplu:
+        # Celulele goale din CSV (NaN) sunt trimise ca None
         properties = {
-            "nume_proprietate_1": str(row['coloana_1']),
-            "nume_proprietate_2": int(row['coloana_2']),
-            "nume_proprietate_3": float(row['coloana_3'])
+            "title": str(row['title']),
+            "authors": None if pd.isna(row['authors']) else str(row['authors']),
+            "categories": None if pd.isna(row['categories']) else str(row['categories']),
+            "published_year": None if pd.isna(row['published_year']) else int(row['published_year']),
+            "average_rating": None if pd.isna(row['average_rating']) else float(row['average_rating']),
+            "num_pages": None if pd.isna(row['num_pages']) else int(row['num_pages']),
+            "ratings_count": None if pd.isna(row['ratings_count']) else int(row['ratings_count']),
         }
         
         # Adaugam request-ul de setare a valorilor pentru item
